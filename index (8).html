@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LPU Campus Shuttle | Seat Request System</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+      background: #f7f1e8;
+      color: #2b1d12;
+      line-height: 1.55;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 18px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .top-strip {
+      background: #4a0600;
+      color: #f0d9a8;
+      font-size: 0.76rem;
+      padding: 7px 0;
+    }
+
+    .top-strip .wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .top-strip b {
+      color: #f5b301;
+      font-weight: 600;
+    }
+
+    .brand-bar {
+      background: #ffffff;
+      border-bottom: 1px solid #e8d9c0;
+    }
+
+    .brand-bar .wrap {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding-top: 16px;
+      padding-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand-name {
+      font-family: Georgia, "Times New Roman", serif;
+      color: #7b0a02;
+      font-size: 1.55rem;
+      letter-spacing: 1.5px;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+
+    .brand-sub {
+      color: #8a6a3a;
+      font-size: 0.84rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .brand-badge {
+      margin-left: auto;
+      background: #7b0a02;
+      color: #ffd97a;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      border-bottom: 3px solid #f5b301;
+    }
+
+    .nav-bar {
+      background: linear-gradient(180deg, #8b0f02 0%, #7b0a02 100%);
+      border-bottom: 3px solid #f5b301;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 3px 10px rgba(74, 6, 0, 0.3);
+    }
+
+    .nav-bar .wrap {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .nav-bar a {
+      color: #ffe9b8;
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 13px 18px;
+      border-bottom: 3px solid transparent;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .nav-bar a:hover {
+      background: rgba(245, 179, 1, 0.18);
+      color: #ffffff;
+      border-bottom-color: #f5b301;
+    }
+
+    .hero {
+      background:
+        repeating-linear-gradient(135deg, rgba(245, 179, 1, 0.07) 0 2px, transparent 2px 16px),
+        linear-gradient(120deg, #7b0a02 0%, #5c0800 55%, #4a0600 100%);
+      color: #ffffff;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero .wrap {
+      padding: 44px 18px 42px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero h1 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 2.05rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      max-width: 640px;
+    }
+
+    .hero h1 span {
+      color: #f5b301;
+    }
+
+    .hero p {
+      margin-top: 12px;
+      max-width: 580px;
+      color: #f3dfc4;
+      font-size: 1.02rem;
+    }
+
+    .hero-actions {
+      margin-top: 22px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hero-mark {
+      position: absolute;
+      right: 6%;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0.16;
+      z-index: 1;
+    }
+
+    .btn {
+      display: inline-block;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.93rem;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      padding: 13px 26px;
+      border-radius: 6px;
+      text-decoration: none;
+      text-align: center;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-gold {
+      background: linear-gradient(180deg, #f7c53c 0%, #f5b301 100%);
+      color: #4a0600;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: #ffe9b8;
+      border: 1.5px solid rgba(245, 179, 1, 0.65);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(245, 179, 1, 0.15);
+    }
+
+    .btn-maroon {
+      background: linear-gradient(180deg, #a21706 0%, #7b0a02 100%);
+      color: #ffffff;
+      box-shadow: 0 3px 10px rgba(123, 10, 2, 0.3);
+    }
+
+    .btn-maroon:hover {
+      background: linear-gradient(180deg, #c1200b 0%, #8b0f02 100%);
+    }
+
+    .btn-outline {
+      background: #ffffff;
+      color: #7b0a02;
+      border: 1.5px solid #d9b98a;
+    }
+
+    .btn-outline:hover {
+      background: #fdf4e4;
+    }
+
+    .btn-plain {
+      background: #f3e8d2;
+      color: #5a3a10;
+      border: 1.5px solid #e0cba0;
+      padding: 10px 18px;
+      font-weight: 600;
+    }
+
+    .btn-plain:hover {
+      background: #e9d7b2;
+    }
+
+    .btn-cancel {
+      background: #ffffff;
+      color: #b91c1c;
+      border: 1.5px solid #e8a2a2;
+      padding: 6px 14px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      border-radius: 5px;
+    }
+
+    .btn-cancel:hover {
+      background: #fdeaea;
+    }
+
+    main.wrap {
+      padding-top: 30px;
+      padding-bottom: 44px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .stat {
+      background: #ffffff;
+      border: 1px solid #e8d9c0;
+      border-radius: 10px;
+      padding: 18px 18px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 2px 8px rgba(74, 6, 0, 0.06);
+      border-top: 3px solid #f5b301;
+    }
+
+    .stat-ic {
+      width: 46px;
+      height: 46px;
+      border-radius: 8px;
+      background: #fbf2de;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .stat-num {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #7b0a02;
+      line-height: 1.1;
+    }
+
+    .stat-lbl {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+      color: #7c5c36;
+    }
+
+    .stat-note {
+      font-size: 0.73rem;
+      color: #a3855c;
+      margin-top: 1px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .section-head h2 {
+      font-family: Georgia, "Times New Roman", serif;
+      color: #7b0a02;
+      font-size: 1.42rem;
+      font-weight: 600;
+    }
+
+    .section-head h2::after {
+      content: "";
+      display: block;
+      width: 52px;
+      height: 3px;
+      background: #f5b301;
+      margin-top: 6px;
+    }
+
+    .section-head p {
+      font-size: 0.84rem;
+      color: #8a6a3a;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e8d9c0;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(74, 6, 0, 0.06);
+      margin-bottom: 26px;
+    }
+
+    .card-title {
+      background: #fbf2de;
+      border-bottom: 1px solid #e8d9c0;
+      padding: 13px 20px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: #7b0a02;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .card-body {
+      padding: 22px 20px;
+    }
+
+    .form-block-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #8a6a3a;
+      margin: 4px 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px dashed #e0cba0;
+    }
+
+    .form-block-title:not(:first-child) {
+      margin-top: 22px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
+      gap: 15px 18px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #4a2c14;
+      margin-bottom: 6px;
+    }
+
+    .field label i {
+      color: #b91c1c;
+      font-style: normal;
+    }
+
+    .field input,
+    .field select,
+    .toolbar input,
+    .toolbar select {
+      width: 100%;
+      padding: 11px 12px;
+      font-size: 0.93rem;
+      font-family: inherit;
+      color: #2b1d12;
+      background: #ffffff;
+      border: 1px solid #d0b98e;
+      border-radius: 6px;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .toolbar input:focus,
+    .toolbar select:focus {
+      outline: none;
+      border-color: #7b0a02;
+      box-shadow: 0 0 0 3px rgba(245, 179, 1, 0.28);
+    }
+
+    .seat-info {
+      margin-top: 20px;
+      background: #fbf2de;
+      border: 1px solid #e8d9c0;
+      border-left: 4px solid #f5b301;
+      border-radius: 6px;
+      padding: 11px 15px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #7c5c36;
+    }
+
+    .seat-info.ok {
+      background: #eefaf1;
+      border-color: #b7e4c7;
+      border-left-color: #2f9e44;
+      color: #1e6b36;
+    }
+
+    .seat-info.warn {
+      background: #fdf3e2;
+      border-color: #f0d9a8;
+      border-left-color: #e8890c;
+      color: #a45b06;
+    }
+
+    .fare-info {
+      margin-top: 10px;
+      background: #fff;
+      border: 1px dashed #d9b98a;
+      border-left: 4px solid #7b0a02;
+      border-radius: 6px;
+      padding: 11px 15px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #4a2c14;
+    }
+
+    .fare-info b {
+      color: #7b0a02;
+      font-size: 1.02rem;
+    }
+
+    .check-line {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 10px 0;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #4a2c14;
+    }
+
+    .check-line input {
+      width: 17px;
+      height: 17px;
+      accent-color: #7b0a02;
+    }
+
+    .form-actions {
+      margin-top: 20px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .notice {
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+      border: 1px solid transparent;
+    }
+
+    .notice-ok {
+      background: #eefaf1;
+      color: #1e6b36;
+      border-color: #b7e4c7;
+    }
+
+    .notice-err {
+      background: #fdeeee;
+      color: #9b1c1c;
+      border-color: #efb4b4;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .toolbar input {
+      flex: 1 1 250px;
+      min-width: 210px;
+    }
+
+    .toolbar select {
+      flex: 0 1 230px;
+    }
+
+    .table-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .table-meta span {
+      font-size: 0.8rem;
+      color: #8a6a3a;
+      font-weight: 600;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid #e8d9c0;
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1020px;
+    }
+
+    .route-table {
+      min-width: 640px;
+    }
+
+    thead th {
+      background: #7b0a02;
+      color: #ffe9b8;
+      text-align: left;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 12px 13px;
+    }
+
+    tbody td {
+      padding: 11px 13px;
+      font-size: 0.89rem;
+      border-bottom: 1px solid #f0e5d2;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #fdf9f1;
+    }
+
+    tbody tr:hover {
+      background: #fbf2de;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 11px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .status::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .st-confirmed {
+      background: #e7f7ec;
+      color: #1e7a3c;
+    }
+
+    .st-pending {
+      background: #fdf3dd;
+      color: #a45b06;
+    }
+
+    .st-cancelled {
+      background: #fdeeee;
+      color: #b91c1c;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 42px 16px;
+    }
+
+    .empty h3 {
+      color: #4a2c14;
+      font-size: 1.12rem;
+      margin: 12px 0 6px;
+    }
+
+    .empty p {
+      color: #8a6a3a;
+      font-size: 0.92rem;
+      margin-bottom: 18px;
+    }
+
+    .route-table td:first-child {
+      font-weight: 600;
+      color: #7b0a02;
+    }
+
+    .slots {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .slot-pill {
+      background: #ffffff;
+      border: 1px solid #d9b98a;
+      color: #7b0a02;
+      font-size: 0.81rem;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 999px;
+    }
+
+    footer {
+      background: #4a0600;
+      color: #e8cfa0;
+      border-top: 4px solid #f5b301;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 22px;
+      padding: 30px 18px 22px;
+    }
+
+    .footer-grid h4 {
+      color: #f5b301;
+      font-size: 0.84rem;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .footer-grid p,
+    .footer-grid a {
+      font-size: 0.85rem;
+      color: #e8cfa0;
+      line-height: 1.7;
+    }
+
+    .footer-grid a {
+      display: block;
+      text-decoration: none;
+    }
+
+    .footer-grid a:hover {
+      color: #ffd97a;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(245, 179, 1, 0.25);
+      padding: 13px 18px;
+      font-size: 0.76rem;
+      color: #c9a86c;
+      text-align: center;
+    }
+
+    @media (max-width: 760px) {
+      .brand-name {
+        font-size: 1.2rem;
+        letter-spacing: 1px;
+      }
+
+      .brand-badge {
+        display: none;
+      }
+
+      .hero h1 {
+        font-size: 1.55rem;
+      }
+
+      .hero-mark {
+        display: none;
+      }
+
+      .nav-bar a {
+        padding: 11px 12px;
+        font-size: 0.82rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .btn {
+        width: 100%;
+      }
+
+      .hero .wrap {
+        padding: 32px 16px 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-strip">
+    <div class="wrap">
+      <span>Lovely Professional University &nbsp;|&nbsp; G.T. Road, Phagwara, Punjab (India) &ndash; 144411</span>
+      <span><b>Academic Session 2026&ndash;27</b> &nbsp;&middot;&nbsp; <span id="headerDate"></span></span>
+    </div>
+  </div>
+
+  <div class="brand-bar">
+    <div class="wrap">
+      <svg width="46" height="52" viewBox="0 0 24 27" aria-hidden="true">
+        <path d="M12 1 L22 5 V13 C22 19 17.5 23.5 12 26 C6.5 23.5 2 19 2 13 V5 Z" fill="#f5b301"></path>
+        <path d="M12 3 L20 6.2 V13 C20 18 16.2 21.8 12 24 C7.8 21.8 4 18 4 13 V6.2 Z" fill="#7b0a02"></path>
+        <text x="12" y="15.8" text-anchor="middle" font-size="7" font-weight="700" fill="#f5b301" font-family="Segoe UI, Arial">LPU</text>
+      </svg>
+      <div>
+        <div class="brand-name">Lovely Professional University</div>
+        <div class="brand-sub">Campus Transport Services</div>
+      </div>
+      <div class="brand-badge">Shuttle Seat Request System</div>
+    </div>
+  </div>
+
+  <nav class="nav-bar">
+    <div class="wrap">
+      <a href="#dashboard">Dashboard</a>
+      <a href="#booking">Book a Seat</a>
+      <a href="#schedule">Campus Locations</a>
+      <a href="#requests">Seat Requests</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <svg class="hero-mark" width="290" height="290" viewBox="0 0 24 27" aria-hidden="true">
+      <path d="M12 1 L22 5 V13 C22 19 17.5 23.5 12 26 C6.5 23.5 2 19 2 13 V5 Z" fill="none" stroke="#f5b301" stroke-width="1.2"></path>
+      <text x="12" y="16.5" text-anchor="middle" font-size="6" font-weight="700" fill="#f5b301" font-family="Georgia, serif">LPU</text>
+    </svg>
+    <div class="wrap">
+      <h1>Campus Shuttle <span>Seat Request</span> System</h1>
+      <p>Reserve your seat for travel to any location inside the 600-acre LPU campus &mdash; all gates, hostels, academic blocks, schools and facilities are available in the booking form. Fare is <b>&#8377;15 per seat per trip</b> and <b>&#8377;5 extra for luggage</b>.</p>
+      <div class="hero-actions">
+        <a href="#booking" class="btn btn-gold">Book a Seat</a>
+        <a href="#requests" class="btn btn-ghost">View My Requests</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="dashboard">
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-ic">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7b0a02" stroke-width="1.8"><rect x="5" y="4" width="14" height="17" rx="2"></rect><path d="M9 3h6v3H9z" fill="#7b0a02" stroke="none"></path><path d="M8 11h8M8 15h8"></path></svg>
+          </div>
+          <div>
+            <div class="stat-num" id="statTotal">0</div>
+            <div class="stat-lbl">Total Requests</div>
+            <div class="stat-note">All submitted requests</div>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="stat-ic">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7b0a02" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.5l2.6 2.6L16 9.5"></path></svg>
+          </div>
+          <div>
+            <div class="stat-num" id="statConfirmed">0</div>
+            <div class="stat-lbl">Confirmed</div>
+            <div class="stat-note">Seats reserved</div>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="stat-ic">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7b0a02" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5.2l3.2 2"></path></svg>
+          </div>
+          <div>
+            <div class="stat-num" id="statPending">0</div>
+            <div class="stat-lbl">Pending</div>
+            <div class="stat-note">Awaiting approval</div>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="stat-ic">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7b0a02" stroke-width="1.8"><path d="M6 4v8h12V4"></path><path d="M5 12h14l-1.2 8H6.2z"></path><path d="M9 16h6"></path></svg>
+          </div>
+          <div>
+            <div class="stat-num" id="statAvailable">20</div>
+            <div class="stat-lbl">Available Seats</div>
+            <div class="stat-note" id="availableNote">Fixed seats on every shuttle trip</div>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="stat-ic">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7b0a02" stroke-width="1.8"><rect x="3" y="6" width="18" height="12" rx="2"></rect><circle cx="12" cy="12" r="2.6"></circle><path d="M6.5 9h.01M17.5 15h.01"></path></svg>
+          </div>
+          <div>
+            <div class="stat-num" id="statFare">&#8377;0</div>
+            <div class="stat-lbl">Total Fare</div>
+            <div class="stat-note">Excluding cancelled requests</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="booking">
+      <div class="section-head">
+        <h2>Book a Seat</h2>
+        <p>Fields marked <i style="color:#b91c1c;font-style:normal;">*</i> are required</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Seat Request Form</div>
+        <div class="card-body">
+          <div id="formMessage" class="notice hidden" aria-live="polite"></div>
+
+          <form id="bookingForm" novalidate>
+            <div class="form-block-title">Student Details</div>
+            <div class="grid">
+              <div class="field">
+                <label for="studentName">Student Name <i>*</i></label>
+                <input type="text" id="studentName" placeholder="Enter full name">
+              </div>
+              <div class="field">
+                <label for="studentId">Registration / Roll Number <i>*</i></label>
+                <input type="text" id="studentId" placeholder="e.g. 12204301">
+              </div>
+            </div>
+
+            <div class="form-block-title">Travel Details</div>
+            <div class="grid">
+              <div class="field">
+                <label for="pickupPoint">Pickup Point <i>*</i></label>
+                <select id="pickupPoint">
+                  <option value="">Select pickup point</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="destination">Destination <i>*</i></label>
+                <select id="destination">
+                  <option value="">Select destination</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="travelDate">Travel Date <i>*</i></label>
+                <input type="date" id="travelDate">
+              </div>
+              <div class="field">
+                <label for="timeSlot">Preferred Time Slot <i>*</i></label>
+                <select id="timeSlot">
+                  <option value="">Select time slot</option>
+                  <option value="8:00 AM – 8:30 AM">8:00 AM – 8:30 AM</option>
+                  <option value="9:00 AM – 9:30 AM">9:00 AM – 9:30 AM</option>
+                  <option value="1:30 PM – 2:00 PM">1:30 PM – 2:00 PM</option>
+                  <option value="5:00 PM – 5:30 PM">5:00 PM – 5:30 PM</option>
+                  <option value="6:00 PM – 6:30 PM">6:00 PM – 6:30 PM</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="seatCount">Number of Seats <i>*</i></label>
+                <input type="number" id="seatCount" min="1" max="10" step="1" placeholder="1 - 10">
+              </div>
+              <div class="field">
+                <label>Luggage</label>
+                <div class="check-line">
+                  <input type="checkbox" id="luggageBox">
+                  <span>Carrying luggage (+&#8377;5 extra)</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="seat-info" id="tripHint">Select a pickup point, destination, travel date and time slot to check seat availability for that trip.</div>
+
+            <div class="fare-info" id="fareHint">Fare: &#8377;15 per seat per trip &nbsp;&middot;&nbsp; &#8377;5 extra for luggage</div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-maroon">Confirm Booking</button>
+              <button type="button" id="resetBtn" class="btn btn-outline">Reset Form</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="schedule">
+      <div class="section-head">
+        <h2>Campus Locations</h2>
+        <p>Fixed seat capacity is allotted per trip</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Popular Shuttle Corridors</div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table class="route-table">
+              <thead>
+                <tr>
+                  <th>Pickup Point</th>
+                  <th>Destination</th>
+                  <th>Seats per Trip</th>
+                </tr>
+              </thead>
+              <tbody id="routesTableBody"></tbody>
+            </table>
+          </div>
+          <div class="form-block-title" style="margin-top:20px;">Daily Departure Timings</div>
+          <div class="slots" id="slotsInfo"></div>
+          <div class="form-block-title" style="margin-top:20px;">Fare Chart</div>
+          <div class="slots">
+            <span class="slot-pill">&#8377;15 per seat / trip</span>
+            <span class="slot-pill">&#8377;5 extra for luggage</span>
+            <span class="slot-pill">Pay at the time of boarding</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="requests">
+      <div class="section-head">
+        <h2>Seat Requests</h2>
+        <p>Records are stored on this device</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Request Register</div>
+        <div class="card-body">
+          <div id="tableMessage" class="notice hidden" aria-live="polite"></div>
+
+          <div class="toolbar">
+            <input type="text" id="searchInput" placeholder="Search by student name or roll number">
+            <select id="routeFilter">
+              <option value="all">All Routes</option>
+            </select>
+            <select id="statusFilter">
+              <option value="all">All Statuses</option>
+              <option value="Confirmed">Confirmed</option>
+              <option value="Pending">Pending</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+            <button type="button" id="clearFiltersBtn" class="btn btn-plain">Clear</button>
+          </div>
+
+          <div class="table-meta">
+            <span id="resultCount">Showing 0 of 0 requests</span>
+          </div>
+
+          <div class="table-wrap" id="tableWrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Request ID</th>
+                  <th>Student Name</th>
+                  <th>Reg. / Roll No.</th>
+                  <th>Route</th>
+                  <th>Date</th>
+                  <th>Time Slot</th>
+                  <th>Seats</th>
+                  <th>Fare</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="requestTableBody"></tbody>
+            </table>
+          </div>
+
+          <div id="emptyState" class="empty hidden">
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#c9a86c" stroke-width="1.4"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M8 8h8M8 12h8M8 16h5"></path></svg>
+            <h3>No records found</h3>
+            <p id="emptyText">No seat requests have been submitted yet.</p>
+            <button type="button" id="emptyBtn" class="btn btn-maroon">Book a Seat</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-grid">
+      <div>
+        <h4>Campus Transport Services</h4>
+        <p>Shuttle seat request portal for daily travel between hostels, academic blocks, schools, gates and facilities of the LPU campus, Phagwara.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#booking">Book a Seat</a>
+        <a href="#schedule">Campus Locations</a>
+        <a href="#requests">Seat Requests</a>
+      </div>
+      <div>
+        <h4>Campus Address</h4>
+        <p>Lovely Professional University<br>G.T. Road, Phagwara<br>Punjab (India) &ndash; 144411</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 Campus Shuttle Seat Request System &nbsp;&middot;&nbsp; Academic project prepared for Lovely Professional University &nbsp;&middot;&nbsp; Not an official LPU web service &nbsp;&middot;&nbsp; Data is stored locally in the browser
+    </div>
+  </footer>
+
+  <script>
+    const BUILDINGS = [
+      "LPU Main Gate (Gate 1)",
+      "Gate 2",
+      "Gate 3",
+      "Gate 4",
+      "Gate 5",
+      "Gate 6",
+      "Gate 7",
+      "Gate 8",
+      "Gate 9",
+      "Phagwara Railway Station",
+      "Phagwara Bus Stand"
+    ];
+
+    for (let i = 1; i <= 13; i++) BUILDINGS.push("Boys Hostel (BH-" + i + ")");
+    for (let i = 1; i <= 6; i++) BUILDINGS.push("Girls Hostel (GH-" + i + ")");
+    BUILDINGS.push("Residential Apartments", "Dormitory Block");
+
+    for (let i = 1; i <= 55; i++) BUILDINGS.push("Block " + i);
+
+    BUILDINGS.push(
+      "Mittal School of Business",
+      "School of Computer Science & Engineering",
+      "School of Electronics & Electrical Engineering",
+      "School of Mechanical Engineering",
+      "School of Civil Engineering",
+      "School of Chemical Engineering & Physical Sciences",
+      "School of Bioengineering & Biosciences",
+      "School of Computer Applications",
+      "School of Architecture & Design",
+      "School of Fashion Design",
+      "School of Interior & Furniture Design",
+      "School of Journalism, Films & Creative Arts",
+      "School of Hotel Management & Tourism",
+      "School of Pharmaceutical Sciences",
+      "School of Physiotherapy & Paramedical Sciences",
+      "School of Agriculture",
+      "School of Law",
+      "School of Education",
+      "School of Physical Education",
+      "School of Art & Languages",
+      "School of Polytechnic",
+      "School of Sciences",
+      "Central Library & Research Block",
+      "Administration Block",
+      "Admissions Block",
+      "Division of Student Welfare",
+      "Division of Career Services",
+      "Placement Cell",
+      "Innovation Studio",
+      "Startup School",
+      "Central Workshop",
+      "Data Centre",
+      "UniMall",
+      "Food Court",
+      "University Cafeteria",
+      "Piazza 1",
+      "Piazza 2",
+      "Piazza 3",
+      "Baldev Raj Mittal Auditorium",
+      "Shanti Devi Mittal Auditorium",
+      "Baldev Raj Mittal Unipolis",
+      "Amphitheatre",
+      "Indoor Stadium",
+      "Swimming Pool",
+      "Shooting Range",
+      "Squash Courts",
+      "Badminton Courts",
+      "Cricket Ground",
+      "Football Ground",
+      "Basketball Courts",
+      "Volleyball Courts",
+      "Athletic Track",
+      "Gymnasium",
+      "LPU Hospital",
+      "Ayurvedic Hospital",
+      "Health Centre",
+      "Bank & ATM",
+      "Post Office",
+      "Fire Station",
+      "Transport Office",
+      "Bus Parking"
+    );
+
+    const CORRIDORS = [
+      ["LPU Main Gate (Gate 1)", "Block 14"],
+      ["Boys Hostel (BH-3)", "UniMall"],
+      ["Girls Hostel (GH-2)", "Mittal School of Business"],
+      ["Block 32", "Central Library & Research Block"],
+      ["LPU Main Gate (Gate 1)", "Phagwara Railway Station"],
+      ["LPU Hospital", "Gate 2"],
+      ["Cricket Ground", "Boys Hostel (BH-5)"],
+      ["UniMall", "Block 27"]
+    ];
+
+    const TIME_SLOTS = [
+      "8:00 AM – 8:30 AM",
+      "9:00 AM – 9:30 AM",
+      "1:30 PM – 2:00 PM",
+      "5:00 PM – 5:30 PM",
+      "6:00 PM – 6:30 PM"
+    ];
+
+    const TRIP_CAPACITY = 20;
+    const STORAGE_KEY = "lpuShuttleRequests_v1";
+    const COUNTER_KEY = "lpuShuttleIdCounter_v1";
+
+    let requests = [];
+
+    const bookingForm = document.getElementById("bookingForm");
+    const nameBox = document.getElementById("studentName");
+    const rollBox = document.getElementById("studentId");
+    const pickupBox = document.getElementById("pickupPoint");
+    const destBox = document.getElementById("destination");
+    const dateBox = document.getElementById("travelDate");
+    const slotBox = document.getElementById("timeSlot");
+    const seatsBox = document.getElementById("seatCount");
+    const luggageBox = document.getElementById("luggageBox");
+    const formMsg = document.getElementById("formMessage");
+    const tripHint = document.getElementById("tripHint");
+    const fareHint = document.getElementById("fareHint");
+    const searchBox = document.getElementById("searchInput");
+    const routeFilter = document.getElementById("routeFilter");
+    const statusFilter = document.getElementById("statusFilter");
+    const tableBody = document.getElementById("requestTableBody");
+    const tableWrap = document.getElementById("tableWrap");
+    const emptyState = document.getElementById("emptyState");
+    const emptyText = document.getElementById("emptyText");
+    const emptyBtn = document.getElementById("emptyBtn");
+
+    function getToday() {
+      const d = new Date();
+      return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    }
+
+    function prettyDate(value) {
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const parts = value.split("-");
+      return parseInt(parts[2], 10) + " " + months[parseInt(parts[1], 10) - 1] + " " + parts[0];
+    }
+
+    function esc(text) {
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function saveRequests() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(requests));
+    }
+
+    function loadRequests() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return [];
+      try {
+        const data = JSON.parse(raw);
+        return Array.isArray(data) ? data : [];
+      } catch (err) {
+        return [];
+      }
+    }
+
+    function nextRequestId() {
+      let n = parseInt(localStorage.getItem(COUNTER_KEY), 10);
+      if (isNaN(n)) n = 1001;
+      localStorage.setItem(COUNTER_KEY, String(n + 1));
+      return "REQ-" + n;
+    }
+
+    function bookedSeats(pickup, dest, date, slot) {
+      let sum = 0;
+      for (const req of requests) {
+        if (req.pickup === pickup && req.destination === dest &&
+            req.travelDate === date && req.timeSlot === slot &&
+            req.status !== "Cancelled") {
+          sum += req.seats;
+        }
+      }
+      return sum;
+    }
+
+    function freeSeats(pickup, dest, date, slot) {
+      return TRIP_CAPACITY - bookedSeats(pickup, dest, date, slot);
+    }
+
+    function calcFare(seats, luggage) {
+      return seats * 15 + (luggage ? 5 : 0);
+    }
+
+    function updateStats() {
+      let conf = 0;
+      let pend = 0;
+      let fareTotal = 0;
+      for (const req of requests) {
+        if (req.status === "Confirmed") conf++;
+        else if (req.status === "Pending") pend++;
+        if (req.status !== "Cancelled") {
+          fareTotal += (req.fare != null ? req.fare : calcFare(req.seats, req.luggage));
+        }
+      }
+
+      const pickup = pickupBox.value;
+      const dest = destBox.value;
+      const date = dateBox.value;
+      const slot = slotBox.value;
+
+      document.getElementById("statTotal").textContent = requests.length;
+      document.getElementById("statConfirmed").textContent = conf;
+      document.getElementById("statPending").textContent = pend;
+      document.getElementById("statFare").textContent = "₹" + fareTotal;
+
+      if (pickup && dest && pickup !== dest && date && slot) {
+        document.getElementById("statAvailable").textContent = freeSeats(pickup, dest, date, slot);
+        document.getElementById("availableNote").textContent = pickup + " → " + dest + " · " + prettyDate(date);
+      } else {
+        document.getElementById("statAvailable").textContent = TRIP_CAPACITY;
+        document.getElementById("availableNote").textContent = "Fixed seats on every shuttle trip";
+      }
+    }
+
+    function fillPickups() {
+      pickupBox.innerHTML = '<option value="">Select pickup point</option>';
+      for (const name of BUILDINGS) {
+        const opt = document.createElement("option");
+        opt.value = name;
+        opt.textContent = name;
+        pickupBox.appendChild(opt);
+      }
+    }
+
+    function fillDestinations(pickup) {
+      destBox.innerHTML = '<option value="">Select destination</option>';
+      for (const name of BUILDINGS) {
+        if (name === pickup) continue;
+        const opt = document.createElement("option");
+        opt.value = name;
+        opt.textContent = name;
+        destBox.appendChild(opt);
+      }
+    }
+
+    function updateSeatHint() {
+      const pickup = pickupBox.value;
+      const dest = destBox.value;
+      const date = dateBox.value;
+      const slot = slotBox.value;
+      if (!pickup || !dest || !date || !slot || pickup === dest) {
+        tripHint.textContent = "Select a pickup point, destination, travel date and time slot to check seat availability for that trip.";
+        tripHint.className = "seat-info";
+        return;
+      }
+      const free = freeSeats(pickup, dest, date, slot);
+      if (free <= 0) {
+        tripHint.textContent = "This trip is fully booked (0 of " + TRIP_CAPACITY + " seats available). Please select another date or time slot.";
+        tripHint.className = "seat-info warn";
+      } else {
+        tripHint.textContent = "Seats available on this trip: " + free + " of " + TRIP_CAPACITY + " (" + pickup + " → " + dest + ").";
+        tripHint.className = "seat-info ok";
+      }
+    }
+
+    function updateFarePreview() {
+      const seats = Number(seatsBox.value);
+      const luggage = luggageBox.checked;
+      if (!Number.isInteger(seats) || seats < 1) {
+        fareHint.innerHTML = "Fare: <b>&#8377;15</b> per seat per trip &nbsp;&middot;&nbsp; <b>&#8377;5</b> extra for luggage";
+        return;
+      }
+      const base = seats * 15;
+      const extra = luggage ? 5 : 0;
+      fareHint.innerHTML = "Estimated Fare: <b>&#8377;" + (base + extra) + "</b> &nbsp;(" + seats + " &times; &#8377;15" + (luggage ? " + &#8377;5 luggage" : "") + ")";
+    }
+
+    function showNotice(box, html, ok) {
+      box.innerHTML = html;
+      box.className = "notice " + (ok ? "notice-ok" : "notice-err");
+    }
+
+    function hideNotice(box) {
+      box.className = "notice hidden";
+      box.innerHTML = "";
+    }
+
+    function validateBooking(data) {
+      if (data.name.length < 2) return { ok: false, msg: "Please enter the student name (at least 2 characters)." };
+      if (data.roll.length < 3) return { ok: false, msg: "Please enter your Registration / Roll Number (at least 3 characters)." };
+      if (!BUILDINGS.includes(data.pickup)) return { ok: false, msg: "Please select a pickup point." };
+      if (!BUILDINGS.includes(data.dest)) return { ok: false, msg: "Please select a destination." };
+      if (data.pickup === data.dest) return { ok: false, msg: "Pickup point and destination cannot be the same. Please choose a different destination." };
+      if (!data.date) return { ok: false, msg: "Please choose a travel date." };
+      if (data.date < getToday()) return { ok: false, msg: "Travel date cannot be in the past. Please choose today or a future date." };
+      if (!TIME_SLOTS.includes(data.slot)) return { ok: false, msg: "Please choose a preferred time slot." };
+      if (!Number.isInteger(data.seats) || data.seats < 1 || data.seats > 10) return { ok: false, msg: "Number of seats must be a whole number between 1 and 10." };
+      const free = freeSeats(data.pickup, data.dest, data.date, data.slot);
+      if (data.seats > free) {
+        return { ok: false, msg: "Not enough seats on this trip! Only " + free + " of " + TRIP_CAPACITY + " seats are still available. Please reduce the number of seats or pick another date / time slot." };
+      }
+      return { ok: true };
+    }
+
+    function submitBooking(event) {
+      event.preventDefault();
+
+      const data = {
+        name: nameBox.value.trim(),
+        roll: rollBox.value.trim(),
+        pickup: pickupBox.value,
+        dest: destBox.value,
+        date: dateBox.value,
+        slot: slotBox.value,
+        seats: Number(seatsBox.value),
+        luggage: luggageBox.checked
+      };
+
+      const check = validateBooking(data);
+      if (!check.ok) {
+        showNotice(formMsg, "&#10060; " + esc(check.msg), false);
+        return;
+      }
+
+      const status = data.seats >= 5 ? "Pending" : "Confirmed";
+
+      const req = {
+        id: nextRequestId(),
+        name: data.name,
+        studentId: data.roll,
+        pickup: data.pickup,
+        destination: data.dest,
+        travelDate: data.date,
+        timeSlot: data.slot,
+        seats: data.seats,
+        luggage: data.luggage,
+        fare: calcFare(data.seats, data.luggage),
+        status: status
+      };
+
+      requests.unshift(req);
+      saveRequests();
+      fillRouteFilter();
+      renderTable();
+      updateStats();
+
+      let msg = "&#9989; Booking successful. Your Request ID is <strong>" + esc(req.id) + "</strong> and the current status is <strong>" + esc(status) + "</strong>. Total fare: <strong>&#8377;" + req.fare + "</strong>.";
+      if (status === "Pending") msg += " Group bookings of 5 or more seats are kept Pending for approval.";
+      showNotice(formMsg, msg, true);
+
+      bookingForm.reset();
+      fillDestinations("");
+      updateSeatHint();
+      updateFarePreview();
+      updateStats();
+    }
+
+    function handleReset() {
+      bookingForm.reset();
+      fillDestinations("");
+      hideNotice(formMsg);
+      updateSeatHint();
+      updateFarePreview();
+      updateStats();
+    }
+
+    function filteredRequests() {
+      const term = searchBox.value.trim().toLowerCase();
+      const routeVal = routeFilter.value;
+      const statusVal = statusFilter.value;
+      const out = [];
+      for (const req of requests) {
+        const matchTerm = term === "" || req.name.toLowerCase().includes(term) || req.studentId.toLowerCase().includes(term);
+        const matchRoute = routeVal === "all" || (req.pickup + "|" + req.destination) === routeVal;
+        const matchStatus = statusVal === "all" || req.status === statusVal;
+        if (matchTerm && matchRoute && matchStatus) out.push(req);
+      }
+      return out;
+    }
+
+    function renderTable() {
+      const list = filteredRequests();
+
+      if (list.length === 0) {
+        tableBody.innerHTML = "";
+        tableWrap.classList.add("hidden");
+        emptyState.classList.remove("hidden");
+        if (requests.length === 0) {
+          emptyText.textContent = "No seat requests have been submitted yet. Use the button below to book your first shuttle seat.";
+          emptyBtn.textContent = "Book a Seat";
+        } else {
+          emptyText.textContent = "No seat requests match your search or filters. Try different keywords or clear the filters.";
+          emptyBtn.textContent = "Clear Search & Filters";
+        }
+      } else {
+        let html = "";
+        for (const req of list) {
+          const routeLabel = req.pickup + " → " + req.destination;
+          const stClass = req.status === "Confirmed" ? "st-confirmed" : (req.status === "Pending" ? "st-pending" : "st-cancelled");
+          const fare = req.fare != null ? req.fare : calcFare(req.seats, req.luggage);
+          let action = '<span style="color:#a3855c;">&mdash;</span>';
+          if (req.status !== "Cancelled") {
+            action = '<button type="button" class="btn btn-cancel cancel-btn" data-id="' + esc(req.id) + '">Cancel Request</button>';
+          }
+          html += "<tr>" +
+            "<td><strong>" + esc(req.id) + "</strong></td>" +
+            "<td>" + esc(req.name) + "</td>" +
+            "<td>" + esc(req.studentId) + "</td>" +
+            "<td>" + esc(routeLabel) + "</td>" +
+            "<td>" + esc(prettyDate(req.travelDate)) + "</td>" +
+            "<td>" + esc(req.timeSlot) + "</td>" +
+            "<td>" + req.seats + "</td>" +
+            "<td>&#8377;" + fare + "</td>" +
+            '<td><span class="status ' + stClass + '">' + esc(req.status) + "</span></td>" +
+            "<td>" + action + "</td>" +
+            "</tr>";
+        }
+        tableBody.innerHTML = html;
+        tableWrap.classList.remove("hidden");
+        emptyState.classList.add("hidden");
+
+        const btns = tableBody.querySelectorAll(".cancel-btn");
+        for (const btn of btns) {
+          btn.addEventListener("click", function () {
+            cancelRequest(btn.getAttribute("data-id"));
+          });
+        }
+      }
+
+      document.getElementById("resultCount").textContent = "Showing " + list.length + " of " + requests.length + " requests";
+    }
+
+    function cancelRequest(id) {
+      let req = null;
+      for (const r of requests) {
+        if (r.id === id) {
+          req = r;
+          break;
+        }
+      }
+      if (!req || req.status === "Cancelled") return;
+
+      const yes = window.confirm("Cancel request " + id + "?\nThe reserved seats will be released.");
+      if (!yes) return;
+
+      req.status = "Cancelled";
+      saveRequests();
+      renderTable();
+      updateStats();
+      updateSeatHint();
+      showNotice(document.getElementById("tableMessage"), "&#9989; Request <strong>" + esc(id) + "</strong> has been cancelled. The reserved seats are now available for booking.", true);
+    }
+
+    function clearFilters() {
+      searchBox.value = "";
+      routeFilter.value = "all";
+      statusFilter.value = "all";
+      hideNotice(document.getElementById("tableMessage"));
+      renderTable();
+    }
+
+    function renderSchedule() {
+      let html = "";
+      for (const c of CORRIDORS) {
+        html += "<tr>" +
+          "<td>" + esc(c[0]) + "</td>" +
+          "<td>" + esc(c[1]) + "</td>" +
+          "<td>" + TRIP_CAPACITY + "</td>" +
+          "</tr>";
+      }
+      document.getElementById("routesTableBody").innerHTML = html;
+
+      let pills = "";
+      for (const slot of TIME_SLOTS) {
+        pills += '<span class="slot-pill">' + esc(slot) + "</span>";
+      }
+      document.getElementById("slotsInfo").innerHTML = pills;
+    }
+
+    function fillRouteFilter() {
+      const keep = routeFilter.value;
+      routeFilter.innerHTML = '<option value="all">All Routes</option>';
+      const seen = [];
+      for (const req of requests) {
+        const key = req.pickup + "|" + req.destination;
+        if (seen.includes(key)) continue;
+        seen.push(key);
+        const opt = document.createElement("option");
+        opt.value = key;
+        opt.textContent = req.pickup + " → " + req.destination;
+        routeFilter.appendChild(opt);
+      }
+      for (const opt of routeFilter.options) {
+        if (opt.value === keep) {
+          routeFilter.value = keep;
+          break;
+        }
+      }
+    }
+
+    bookingForm.addEventListener("submit", submitBooking);
+    document.getElementById("resetBtn").addEventListener("click", handleReset);
+
+    pickupBox.addEventListener("change", function () {
+      fillDestinations(pickupBox.value);
+      updateSeatHint();
+      updateStats();
+    });
+    destBox.addEventListener("change", function () {
+      updateSeatHint();
+      updateStats();
+    });
+    slotBox.addEventListener("change", function () {
+      updateSeatHint();
+      updateStats();
+    });
+    dateBox.addEventListener("change", function () {
+      updateSeatHint();
+      updateStats();
+    });
+    luggageBox.addEventListener("change", updateFarePreview);
+    seatsBox.addEventListener("input", updateFarePreview);
+    seatsBox.addEventListener("change", updateFarePreview);
+
+    searchBox.addEventListener("input", renderTable);
+    routeFilter.addEventListener("change", renderTable);
+    statusFilter.addEventListener("change", renderTable);
+    document.getElementById("clearFiltersBtn").addEventListener("click", clearFilters);
+
+    emptyBtn.addEventListener("click", function () {
+      if (requests.length === 0) {
+        window.location.hash = "booking";
+        nameBox.focus();
+      } else {
+        clearFilters();
+      }
+    });
+
+    document.getElementById("headerDate").textContent = new Date().toLocaleDateString("en-IN", {
+      weekday: "long", day: "numeric", month: "long", year: "numeric"
+    });
+
+    requests = loadRequests();
+    fillPickups();
+    fillDestinations("");
+    fillRouteFilter();
+    renderSchedule();
+    dateBox.min = getToday();
+    renderTable();
+    updateStats();
+    updateSeatHint();
+    updateFarePreview();
+  </script>
+</body>
+</html>
